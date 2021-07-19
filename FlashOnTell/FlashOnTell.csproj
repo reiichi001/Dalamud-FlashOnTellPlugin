@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>FlashOnTell</RootNamespace>
+        <AssemblyName>FlashOnTell</AssemblyName>
+        <AssemblyTitle>FlashOnTell</AssemblyTitle>
+        <ProductName>FlashOnTell</ProductName>
+        <Version>0.0.0.1</Version>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Dalamud">
+            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Newtonsoft.Json.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DalamudPackager" Version="1.2.1" />
+    </ItemGroup>
+</Project>

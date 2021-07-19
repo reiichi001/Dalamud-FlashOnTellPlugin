@@ -1,0 +1,6 @@
+{
+  "Author": "Franz",
+  "Name": "FlashOnTell",
+  "Description": "Flash FFXIV's program on the taskbar when you receive a /tell.",
+  "InternalName": "FlashOnTell"
+}
