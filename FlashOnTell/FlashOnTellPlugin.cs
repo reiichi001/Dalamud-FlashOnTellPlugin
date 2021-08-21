@@ -45,14 +45,14 @@ namespace FlashOnTell
             
         }
 
-        [Command("/FlashOnTell")]
+        [Command("/pflash")]
         [HelpMessage("Prints sample text to the chatbox")]
         public void FlashOnTellCommand(string command, string args)
         {
             // You may want to assign these references to private variables for convenience.
             // Keep in mind that the local player does not exist until after logging in.
             var chat = this._pi.Framework.Gui.Chat;
-            chat.Print($"This is sample text to the default Dalamud chat message type.");
+            chat.Print($"This doesn't do anything yet.");
         }
 
         public string Name => "flashontell plugin";
