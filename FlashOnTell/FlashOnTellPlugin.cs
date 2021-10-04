@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using Dalamud.Data;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.Command;
+using Dalamud.Game.Gui;
 using System.Runtime.InteropServices;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using FlashOnTell.Attributes;
 
@@ -9,24 +14,32 @@ namespace FlashOnTell
 {
     public class FlashOnTellPlugin : IDalamudPlugin
     {
-        private DalamudPluginInterface _pi;
         private PluginCommandManager<FlashOnTellPlugin> commandManager;
-        private Configuration config;
-        private readonly Random _rng = new Random();
+        public Configuration Config;
 
-        public void Initialize(DalamudPluginInterface pluginInterface)
+        [PluginService]
+        public DalamudPluginInterface Interface { get; private set; }
+
+        [PluginService]
+        public ClientState State { get; private set; }
+
+        [PluginService]
+        public ChatGui Chat { get; set; }
+
+        [PluginService]
+        public DataManager Data { get; set; }
+
+        public FlashOnTellPlugin(CommandManager command)
         {
-            _pi = pluginInterface;
+            this.Config = (Configuration)this.Interface.GetPluginConfig() ?? new Configuration();
+            this.Config.Initialize(this.Interface);
 
-            this.config = (Configuration)_pi.GetPluginConfig() ?? new Configuration();
-            this.config.Initialize(_pi);
+            this.Chat.ChatMessage += ChatOnOnChatMessage;
 
-            pluginInterface.Framework.Gui.Chat.OnChatMessage += Chat_OnChatMessage;
-
-            this.commandManager = new PluginCommandManager<FlashOnTellPlugin>(this, _pi);
+            this.commandManager = new PluginCommandManager<FlashOnTellPlugin>(this, command);
         }
 
-        private void Chat_OnChatMessage(Dalamud.Game.Text.XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+        private void ChatOnOnChatMessage(Dalamud.Game.Text.XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
         {
             if (type == Dalamud.Game.Text.XivChatType.TellIncoming)
             {
@@ -51,16 +64,26 @@ namespace FlashOnTell
         {
             // You may want to assign these references to private variables for convenience.
             // Keep in mind that the local player does not exist until after logging in.
-            var chat = this._pi.Framework.Gui.Chat;
-            chat.Print($"This doesn't do anything yet.");
+            this.Chat.Print($"This doesn't do anything yet.");
         }
 
         public string Name => "flashontell plugin";
 
+        #region IDisposable Support
+        protected virtual void Dispose(bool disposing)
+        {
+            this.commandManager.Dispose();
+
+            this.Interface.SavePluginConfig(this.Config);
+            this.Chat.ChatMessage -= ChatOnOnChatMessage;
+            this.Interface.Dispose();
+        }
+
         public void Dispose()
         {
-            _pi.Framework.Gui.Chat.OnChatMessage -= Chat_OnChatMessage;
-            _pi.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }

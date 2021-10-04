@@ -4,5 +4,5 @@
   "InternalName": "FlashOnTell",
   "Description": "Flash FFXIV's program on the taskbar when you receive a /tell. This plugin has no configurable settings at this time.",
   "ApplicableVersion": "any",
-  "LoadPriority": 0
+  "DalamudApiLevel": 4,
 }
