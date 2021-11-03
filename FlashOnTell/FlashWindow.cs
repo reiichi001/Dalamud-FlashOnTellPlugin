@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace FlashOnTell
@@ -7,6 +8,7 @@ namespace FlashOnTell
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
+
         private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
 
         /// Stop flashing. The system restores the window to its original state.            
@@ -27,6 +29,12 @@ namespace FlashOnTell
 
         /// Flash continuously until the window comes to the foreground.            
         public const uint FLASHW_TIMERNOFG = 12;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct FLASHWINFO
@@ -69,6 +77,29 @@ namespace FlashOnTell
             fi.dwTimeout = timeout;
             return fi;
         }
+
+        /// <summary>Returns true if the current application has focus, false otherwise</summary>
+        /// taken from https://stackoverflow.com/questions/7162834/determine-if-current-application-is-activated-has-focus
+        public static bool ApplicationIsActivated()
+        {
+            var activatedHandle = GetForegroundWindow();
+            if (activatedHandle == IntPtr.Zero)
+            {
+                return false;       // No window is currently activated
+            }
+
+            /*
+            var procId = Process.GetCurrentProcess().Id;
+            int activeProcId;
+            GetWindowThreadProcessId(activatedHandle, out activeProcId);
+
+            return activeProcId == procId;
+            */
+            return Process.GetCurrentProcess().MainWindowHandle == activatedHandle;
+        }
+
+
+       
 
 
         /// helper methods    

@@ -9,6 +9,9 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using FlashOnTell.Attributes;
+using Dalamud.Game.Text;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Logging;
 
 namespace FlashOnTell
 {
@@ -39,10 +42,23 @@ namespace FlashOnTell
             this.commandManager = new PluginCommandManager<FlashOnTellPlugin>(this, command);
         }
 
-        private void ChatOnOnChatMessage(Dalamud.Game.Text.XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+        private void ChatOnOnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
         {
-            if (type == Dalamud.Game.Text.XivChatType.TellIncoming)
+            // don't flash if it's a handled request.
+            if (isHandled)
+                return;
+
+            if (type == XivChatType.TellIncoming)
             {
+
+                if (FlashWindow.ApplicationIsActivated())
+                {
+                    // don't flash if FFXIV is already active. There's no point and it hurts performance.
+                    // this.Chat.Print($"Flash on tell didn't fuck your client today. :)");
+                    // isHandled = true;
+                    PluginLog.Information("Ignored flashontell because window was active.");
+                    return;
+                }
                 // maybe we can reflect this out of Dalamud?
                 // for now, I've ripped code from http://eddiejackson.net/wp/?p=21197 and adapted it to work
                 var flashInfo = new FlashWindow.FLASHWINFO
@@ -54,6 +70,8 @@ namespace FlashOnTell
                     hwnd = Process.GetCurrentProcess().MainWindowHandle,
                 };
                 FlashWindow.Flash(flashInfo);
+                PluginLog.Information("Processed flashontell because window was't active.");
+                // isHandled = true;
             }
             
         }
