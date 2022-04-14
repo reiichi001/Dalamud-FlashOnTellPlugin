@@ -94,7 +94,6 @@ namespace FlashOnTell
 
             this.Interface.SavePluginConfig(this.Config);
             this.Chat.ChatMessage -= ChatOnOnChatMessage;
-            this.Interface.Dispose();
         }
 
         public void Dispose()

@@ -8,8 +8,9 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <NoWarn>IDE0003</NoWarn>
-    <AssemblyVersion>0.0.1.1</AssemblyVersion>
+    <AssemblyVersion>0.0.1.3</AssemblyVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Dalamud">
@@ -22,6 +23,9 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.3" />
+        <PackageReference Include="DalamudPackager" Version="2.1.6" />
     </ItemGroup>
+	<ItemGroup>
+		<Content Include="..\images\icon.png" Link="images/icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false"/>
+	</ItemGroup>
 </Project>
