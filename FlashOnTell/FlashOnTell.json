@@ -2,6 +2,7 @@
   "Author": "Franz",
   "Name": "FlashOnTell",
   "InternalName": "FlashOnTell",
+  "RepoUrl": "https://github.com/reiichi001/Dalamud-FlashOnTellPlugin",
   "Description": "Flash FFXIV's program on the taskbar when you receive a /tell. This plugin has no configurable settings at this time.",
   "Punchline": "Flash FFXIV's program on the taskbar when you receive a /tell"
 }
