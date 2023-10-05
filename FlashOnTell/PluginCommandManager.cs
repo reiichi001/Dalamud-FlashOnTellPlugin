@@ -1,22 +1,22 @@
 ﻿using Dalamud.Game.Command;
-using Dalamud.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FlashOnTell.Attributes;
 using static Dalamud.Game.Command.CommandInfo;
+using Dalamud.Plugin.Services;
 // ReSharper disable ForCanBeConvertedToForeach
 
 namespace FlashOnTell
 {
     public class PluginCommandManager<THost> : IDisposable
     {
-        private readonly CommandManager command;
+        private readonly ICommandManager command;
         private readonly (string, CommandInfo)[] pluginCommands;
         private readonly THost host;
 
-        public PluginCommandManager(THost host, CommandManager command)
+        public PluginCommandManager(THost host, ICommandManager command)
         {
             this.command = command;
             this.host = host;

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using Dalamud.Data;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
 using System.Runtime.InteropServices;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using FlashOnTell.Attributes;
 using Dalamud.Game.Text;
-using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
+using System.Net.Security;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FlashOnTell
 {
@@ -20,26 +18,25 @@ namespace FlashOnTell
         private PluginCommandManager<FlashOnTellPlugin> commandManager;
         public Configuration Config;
 
-        [PluginService]
-        public DalamudPluginInterface Interface { get; private set; }
+        public DalamudPluginInterface Interface;
+        public IChatGui Chat;
+        public IPluginLog Logger;
 
-        [PluginService]
-        public ClientState State { get; private set; }
-
-        [PluginService]
-        public ChatGui Chat { get; set; }
-
-        [PluginService]
-        public DataManager Data { get; set; }
-
-        public FlashOnTellPlugin(CommandManager command)
+        public FlashOnTellPlugin(DalamudPluginInterface pluginInterface, ICommandManager command)
         {
-            this.Config = (Configuration)this.Interface.GetPluginConfig() ?? new Configuration();
-            this.Config.Initialize(this.Interface);
+            Interface = pluginInterface;
+            Config = (Configuration)Interface.GetPluginConfig() ?? new Configuration();
+            Config.Initialize(Interface);
+            Interface.Create<Service>();
 
-            this.Chat.ChatMessage += ChatOnOnChatMessage;
+            Chat = Service.Chat;
+            Logger = Service.PluginLog;
+            
+            Chat.ChatMessage += ChatOnOnChatMessage;
 
-            this.commandManager = new PluginCommandManager<FlashOnTellPlugin>(this, command);
+            commandManager = new PluginCommandManager<FlashOnTellPlugin>(this, command);
+
+
         }
 
         private void ChatOnOnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
@@ -56,7 +53,7 @@ namespace FlashOnTell
                     // don't flash if FFXIV is already active. There's no point and it hurts performance.
                     // this.Chat.Print($"Flash on tell didn't fuck your client today. :)");
                     // isHandled = true;
-                    PluginLog.Information("Ignored flashontell because window was active.");
+                    Logger.Debug("Ignored flashontell because window was active.");
                     return;
                 }
                 // maybe we can reflect this out of Dalamud?
@@ -70,7 +67,7 @@ namespace FlashOnTell
                     hwnd = Process.GetCurrentProcess().MainWindowHandle,
                 };
                 FlashWindow.Flash(flashInfo);
-                PluginLog.Information("Processed flashontell because window was't active.");
+                Logger.Debug("Processed flashontell because window was't active.");
                 // isHandled = true;
             }
             
@@ -78,11 +75,22 @@ namespace FlashOnTell
 
         [Command("/pflash")]
         [HelpMessage("Prints sample text to the chatbox")]
-        public void FlashOnTellCommand(string command, string args)
+        public async void FlashOnTellCommand(string command, string args)
         {
             // You may want to assign these references to private variables for convenience.
             // Keep in mind that the local player does not exist until after logging in.
-            this.Chat.Print($"This doesn't do anything yet.");
+            Chat.Print($"FlashOnTell will try to flash the icon in 3 seconds. This generally won't work because it's the active window unless you tab out immediately.");
+            Logger.Debug("Attempted to flashontell but window is active.");
+            await Task.Delay(3000);
+            var flashInfo = new FlashWindow.FLASHWINFO
+            {
+                cbSize = (uint)Marshal.SizeOf<FlashWindow.FLASHWINFO>(),
+                uCount = uint.MaxValue,
+                dwTimeout = 0,
+                dwFlags = FlashWindow.FLASHW_ALL | FlashWindow.FLASHW_TIMERNOFG,
+                hwnd = Process.GetCurrentProcess().MainWindowHandle,
+            };
+            FlashWindow.Flash(flashInfo);
         }
 
         public string Name => "flashontell plugin";
@@ -90,10 +98,10 @@ namespace FlashOnTell
         #region IDisposable Support
         protected virtual void Dispose(bool disposing)
         {
-            this.commandManager.Dispose();
+            commandManager.Dispose();
 
-            this.Interface.SavePluginConfig(this.Config);
-            this.Chat.ChatMessage -= ChatOnOnChatMessage;
+            Interface.SavePluginConfig(Config);
+            Chat.ChatMessage -= ChatOnOnChatMessage;
         }
 
         public void Dispose()
