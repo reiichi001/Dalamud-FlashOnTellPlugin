@@ -39,7 +39,7 @@ namespace FlashOnTell
 
         }
 
-        private void ChatOnOnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+        private void ChatOnOnChatMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled)
         {
             // don't flash if it's a handled request.
             if (isHandled)
