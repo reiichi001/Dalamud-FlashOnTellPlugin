@@ -18,11 +18,11 @@ namespace FlashOnTell
         private PluginCommandManager<FlashOnTellPlugin> commandManager;
         public Configuration Config;
 
-        public DalamudPluginInterface Interface;
+        public IDalamudPluginInterface Interface;
         public IChatGui Chat;
         public IPluginLog Logger;
 
-        public FlashOnTellPlugin(DalamudPluginInterface pluginInterface, ICommandManager command)
+        public FlashOnTellPlugin(IDalamudPluginInterface pluginInterface, ICommandManager command)
         {
             Interface = pluginInterface;
             Config = (Configuration)Interface.GetPluginConfig() ?? new Configuration();

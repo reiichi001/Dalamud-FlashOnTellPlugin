@@ -11,7 +11,7 @@ namespace FlashOnTell
 {
     public class Service
     {
-        [PluginService] internal static DalamudPluginInterface Interface { get; private set; } = null!;
+        [PluginService] internal static IDalamudPluginInterface Interface { get; private set; } = null!;
         [PluginService] internal static IClientState State { get; private set; } = null!;
         [PluginService] internal static IChatGui Chat { get; private set; } = null!;
         [PluginService] internal static IDataManager Data { get; private set; } = null!;
