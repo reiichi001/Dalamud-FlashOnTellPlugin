@@ -1,34 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Dalamud.NET.Sdk/11.0.0">
 	<PropertyGroup>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<PlatformTarget>x64</PlatformTarget>
-		<Platforms>x64;AnyCPU</Platforms>
-		<LangVersion>latest</LangVersion>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<NoWarn>IDE0003</NoWarn>
-		<AssemblyVersion>0.0.6.0</AssemblyVersion>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<AssemblyVersion>0.0.7.0</AssemblyVersion>
+		<Platforms>x64</Platforms>
 	</PropertyGroup>
-	<PropertyGroup>
-		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="Dalamud">
-			<HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="DalamudPackager" Version="2.1.13" />
-	</ItemGroup>
 	<ItemGroup>
 		<Content Include="..\images\icon.png" Link="images/icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false" />
 	</ItemGroup>
