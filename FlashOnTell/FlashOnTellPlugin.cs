@@ -10,6 +10,7 @@ using Dalamud.Plugin.Services;
 using System.Net.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Game.Chat;
 
 namespace FlashOnTell
 {
@@ -39,13 +40,13 @@ namespace FlashOnTell
 
         }
 
-        private void ChatOnOnChatMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled)
+        private void ChatOnOnChatMessage(IHandleableChatMessage message)
         {
             // don't flash if it's a handled request.
-            if (isHandled)
+            if (message.IsHandled)
                 return;
 
-            if (type == XivChatType.TellIncoming)
+            if (message.LogKind == XivChatType.TellIncoming)
             {
 
                 if (FlashWindow.ApplicationIsActivated())
